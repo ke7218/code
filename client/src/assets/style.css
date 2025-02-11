@@ -1,0 +1,108 @@
+/* 全局样式重置 */
+*{
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 顶部导航栏 */
+.f-header {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    height: 70px !important;
+    display: flex;
+    align-items: center;
+    background-color: #00bbff;
+    cursor: pointer;
+    border-bottom: 0px;
+}
+
+/* 顶部logo容器 */
+.f-header-container {
+    position: absolute;
+    left: 25px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* 头部logo图片 */
+.header-logo {
+    margin-top: 3px;
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+}
+
+/* 头部标题文字 */
+.header-title {
+    font-size: 20px;
+}
+
+/* 顶部用户信息 */
+.f-header-user{
+    position: absolute;
+    right: 35px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+/* 个人中心链接 */
+.el-dropdown-link {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    margin-top: 4.5px;
+}
+
+/* 用户图标 */
+.el-dropdown-link .fa {
+    margin-top: 4px;
+    margin-right: 5px;
+    font-size: 30px;
+}
+
+/* 左侧菜单栏 */
+.f-left{
+    position: fixed;
+    top: 80px;
+    left: 0;
+    bottom: 0;
+    width: 200px !important;
+    border-right: 1px solid #eee;
+    background-color: #fff;
+}
+
+/* 左侧菜单图标 */
+.f-left .fa{
+    margin-right: 10px;
+}
+
+/* 主体内容区域 */
+.f-body{
+    position: absolute;
+    left: 200px;
+    right: 0;
+    top: 70px;
+    bottom: 0;
+    background-color: #F2F2F2;
+    padding: 15px;
+}
+
+/* 主要按钮样式 */
+.el-button--primary {
+    color: #FFF;
+    background-color: #50adff;
+    border-color: #50adff;
+}
+
+/* 主要按钮悬停状态 */
+.el-button--primary:hover{
+    background-color:#0380ee;
+    border-color: #0380ee;
+}
+

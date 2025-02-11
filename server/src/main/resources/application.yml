@@ -1,0 +1,29 @@
+server:
+  port: 9999
+  servlet:
+    context-path: /teams
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+spring:
+  mvc:
+    static-path-pattern: /**
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+  datasource:
+    username: root
+    password:
+    url: jdbc:mysql://localhost:3306/cms?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxWait: 60000
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: self.cases.teams.entity
+  configuration:
+    map-underscore-to-camel-case: true
