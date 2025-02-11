@@ -1,0 +1,450 @@
+
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+--
+-- 数据库： `cms`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `active_logs`
+--
+
+DROP TABLE IF EXISTS `active_logs`;
+CREATE TABLE IF NOT EXISTS `active_logs` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '报名时间',
+  `active_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动编号',
+  `user_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '报名用户',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `active_id` (`active_id`) USING BTREE,
+  KEY `user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='报名记录' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `active_logs`
+--
+
+INSERT INTO `active_logs` (`id`, `create_time`, `active_id`, `user_id`) VALUES
+('1736944668364', '2025-01-15 20:37:48', '1736944668359', '1736223266843'),
+('1736944804618', '2025-01-15 20:40:04', '1736944804614', '1736223266843'),
+('1736944816700', '2025-01-15 20:40:16', '1736944804614', '1736224614889'),
+('1736944852828', '2025-01-15 20:40:52', '1736944668359', '1736224648353'),
+('1736944854933', '2025-01-15 20:40:54', '1736944804614', '1736224648353'),
+('1737100870057', '2025-01-17 16:01:10', '1736944668359', '1736224622760'),
+('1737285918328', '2025-01-19 19:25:18', '1736944804614', '1736224631826'),
+('1737286967434', '2025-01-19 19:42:47', '1736944668359', '1736224614889');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `activities`
+--
+
+DROP TABLE IF EXISTS `activities`;
+CREATE TABLE IF NOT EXISTS `activities` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动名称',
+  `comm` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动概述',
+  `detail` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动详情',
+  `ask` varchar(125) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动要求',
+  `total` int NOT NULL COMMENT '报名人数',
+  `active_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '活动时间',
+  `team_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '发布社团',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `team_id` (`team_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='活动信息' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `activities`
+--
+
+INSERT INTO `activities` (`id`, `name`, `comm`, `detail`, `ask`, `total`, `active_time`, `team_id`) VALUES
+('1736944668359', '今天完成毕设', '今天完成毕设', '今天完成毕设', '今天完成毕设', 4, '2025-01-15 20:37:41', '1736224118569'),
+('1736944804614', '大扫除', '大扫除', '大扫除', '大扫除', 4, '2025-01-15 20:39:56', '1736224159128');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `activity_comments`
+--
+
+DROP TABLE IF EXISTS `activity_comments`;
+CREATE TABLE IF NOT EXISTS `activity_comments` (
+  `id` char(13) NOT NULL COMMENT '评论ID',
+  `activity_id` char(13) NOT NULL COMMENT '活动ID',
+  `user_id` char(13) NOT NULL COMMENT '评论用户ID',
+  `content` text NOT NULL COMMENT '评论内容',
+  `create_time` char(19) NOT NULL COMMENT '评论时间',
+  `sentiment` varchar(20) DEFAULT 'NEUTRAL' COMMENT '情感分析结果: POSITIVE/NEGATIVE/NEUTRAL',
+  PRIMARY KEY (`id`),
+  KEY `idx_activity_id` (`activity_id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='活动评论表' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `activity_comments`
+--
+
+INSERT INTO `activity_comments` (`id`, `activity_id`, `user_id`, `content`, `create_time`, `sentiment`) VALUES
+('1737259583717', '1736944804614', '1736223266843', '太烂了，没意思', '2025-01-19 12:06:23', 'NEGATIVE'),
+('1737259613038', '1736944804614', '1736224648353', '还行，一般般', '2025-01-19 12:06:53', 'NEUTRAL'),
+('1737259632054', '1736944804614', '1736224648353', '绝绝子', '2025-01-19 12:07:12', 'POSITIVE'),
+('1737259658317', '1736944804614', '1736224648353', '好玩是好玩，就是有点太累了', '2025-01-19 12:07:38', 'NEUTRAL'),
+('1737259776255', '1736944804614', '1736224614889', '还不错，建议多开展', '2025-01-19 12:09:36', 'POSITIVE'),
+('1737285538670', '1736944804614', '1736223266843', '好玩', '2025-01-19 19:18:58', 'POSITIVE');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `apply_logs`
+--
+
+DROP TABLE IF EXISTS `apply_logs`;
+CREATE TABLE IF NOT EXISTS `apply_logs` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `status` int NOT NULL COMMENT '处理状态',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '申请时间',
+  `team_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '申请社团',
+  `user_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '申请用户',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `team_id` (`team_id`) USING BTREE,
+  KEY `user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='申请记录' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `apply_logs`
+--
+
+INSERT INTO `apply_logs` (`id`, `status`, `create_time`, `team_id`, `user_id`) VALUES
+('1736224850034', 2, '2025-01-07 12:40:50', '1736224118569', '1736224614889'),
+('1736224853439', 1, '2025-01-07 12:40:53', '1736224141560', '1736224614889'),
+('1736224855883', 1, '2025-01-07 12:40:55', '1736224159128', '1736224614889'),
+('1736224875331', 1, '2025-01-07 12:41:15', '1736224186282', '1736224614889'),
+('1736224878050', 0, '2025-01-07 12:41:18', '1736224245782', '1736224614889'),
+('1736224879479', 0, '2025-01-07 12:41:19', '1736224277197', '1736224614889'),
+('1736224880976', 0, '2025-01-07 12:41:20', '1736224287846', '1736224614889'),
+('1736224882372', 0, '2025-01-07 12:41:22', '1736224300565', '1736224614889'),
+('1736224883774', 0, '2025-01-07 12:41:23', '1736224319619', '1736224614889'),
+('1736224885314', 0, '2025-01-07 12:41:25', '1736224339618', '1736224614889'),
+('1736224939673', 1, '2025-01-07 12:42:19', '1736224141560', '1736224622760'),
+('1736224941925', 0, '2025-01-07 12:42:21', '1736224319619', '1736224622760'),
+('1736224943267', 0, '2025-01-07 12:42:23', '1736224287846', '1736224622760'),
+('1736224944541', 1, '2025-01-07 12:42:24', '1736224245782', '1736224622760'),
+('1736224946191', 2, '2025-01-07 12:42:26', '1736224159128', '1736224622760'),
+('1736224949030', 0, '2025-01-07 12:42:29', '1736224339618', '1736224622760'),
+('1736224967062', 2, '2025-01-07 12:42:47', '1736224118569', '1736224631826'),
+('1736224968645', 1, '2025-01-07 12:42:48', '1736224159128', '1736224631826'),
+('1736224972248', 0, '2025-01-07 12:42:52', '1736224277197', '1736224631826'),
+('1736224973524', 0, '2025-01-07 12:42:53', '1736224300565', '1736224631826'),
+('1736224975102', 0, '2025-01-07 12:42:55', '1736224339618', '1736224631826'),
+('1736224992959', 0, '2025-01-07 12:43:12', '1736224339618', '1736224639401'),
+('1736224994200', 0, '2025-01-07 12:43:14', '1736224300565', '1736224639401'),
+('1736224995493', 0, '2025-01-07 12:43:15', '1736224319619', '1736224639401'),
+('1736224997243', 2, '2025-01-07 12:43:17', '1736224245782', '1736224639401'),
+('1736225011231', 1, '2025-01-07 12:43:31', '1736224118569', '1736224648353'),
+('1736225012931', 1, '2025-01-07 12:43:32', '1736224159128', '1736224648353'),
+('1736225014186', 1, '2025-01-07 12:43:34', '1736224245782', '1736224648353'),
+('1736225016464', 0, '2025-01-07 12:43:36', '1736224300565', '1736224648353'),
+('1736225018237', 0, '2025-01-07 12:43:38', '1736224339618', '1736224648353'),
+('1736225027877', 0, '2025-01-07 12:43:47', '1736224277197', '1736224648353'),
+('1736225035516', 0, '2025-01-07 12:43:55', '1736224387650', '1736224648353'),
+('1736225038970', 0, '2025-01-07 12:43:58', '1736224371579', '1736224648353'),
+('1736225055820', 1, '2025-01-07 12:44:15', '1736224159128', '1736224659855'),
+('1736225059153', 0, '2025-01-07 12:44:19', '1736224356490', '1736224659855'),
+('1736225062480', 0, '2025-01-07 12:44:22', '1736224418852', '1736224659855'),
+('1736225064962', 0, '2025-01-07 12:44:24', '1736224371579', '1736224659855'),
+('1736225068471', 0, '2025-01-07 12:44:28', '1736224455487', '1736224659855'),
+('1736776443620', 1, '2025-01-13 21:54:03', '1736224186282', '1736224631826'),
+('1736840921561', 1, '2025-01-14 15:48:41', '1736224118569', '1736224622760'),
+('1737101142814', 2, '2025-01-17 16:05:42', '1736224118569', '1736224622760'),
+('1737101220126', 1, '2025-01-17 16:07:00', '1736224118569', '1736224614889'),
+('1737102906861', 0, '2025-01-17 16:35:06', '1736224118569', '1736224614889'),
+('1737285724177', 0, '2025-01-19 19:22:04', '1736938993973', '1736224614889');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `members`
+--
+
+DROP TABLE IF EXISTS `members`;
+CREATE TABLE IF NOT EXISTS `members` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '入团时间',
+  `team_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '加入社团',
+  `user_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '申请用户',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `team_id` (`team_id`) USING BTREE,
+  KEY `user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='成员信息' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `members`
+--
+
+INSERT INTO `members` (`id`, `create_time`, `team_id`, `user_id`) VALUES
+('1736224118575', '2025-01-07 12:28:38', '1736224118569', '1736223266843'),
+('1736224141566', '2025-01-07 12:29:01', '1736224141560', '1736223340693'),
+('1736224159132', '2025-01-07 12:29:19', '1736224159128', '1736223266843'),
+('1736224186285', '2025-01-07 12:29:46', '1736224186282', '1736223266843'),
+('1736224245786', '2025-01-07 12:30:45', '1736224245782', '1736223879293'),
+('1736224277200', '2025-01-07 12:31:17', '1736224277197', '1736223887084'),
+('1736224287849', '2025-01-07 12:31:27', '1736224287846', '1736223887084'),
+('1736224300569', '2025-01-07 12:31:40', '1736224300565', '1736223887084'),
+('1736224319623', '2025-01-07 12:31:59', '1736224319619', '1736223896278'),
+('1736224339622', '2025-01-07 12:32:19', '1736224339618', '1736223896278'),
+('1736224356494', '2025-01-07 12:32:36', '1736224356490', '1736223904813'),
+('1736224371584', '2025-01-07 12:32:51', '1736224371579', '1736223904813'),
+('1736224387655', '2025-01-07 12:33:07', '1736224387650', '1736223930860'),
+('1736224407558', '2025-01-07 12:33:27', '1736224407553', '1736223930860'),
+('1736224418856', '2025-01-07 12:33:38', '1736224418852', '1736223973115'),
+('1736224435349', '2025-01-07 12:33:55', '1736224435346', '1736223973115'),
+('1736224455491', '2025-01-07 12:34:15', '1736224455487', '1736223981649'),
+('1736224470827', '2025-01-07 12:34:30', '1736224470824', '1736223998408'),
+('1736225161747', '2025-01-07 12:46:01', '1736224159128', '1736224659855'),
+('1736225162458', '2025-01-07 12:46:02', '1736224159128', '1736224648353'),
+('1736225162899', '2025-01-07 12:46:02', '1736224118569', '1736224648353'),
+('1736225165044', '2025-01-07 12:46:05', '1736224159128', '1736224631826'),
+('1736225166618', '2025-01-07 12:46:06', '1736224159128', '1736224614889'),
+('1736225166952', '2025-01-07 12:46:06', '1736224186282', '1736224614889'),
+('1736226267180', '2025-01-07 13:04:27', '1736226267177', '1736224009602'),
+('1736315244419', '2025-01-08 13:47:24', '1736224245782', '1736224648353'),
+('1736315246101', '2025-01-08 13:47:26', '1736224245782', '1736224622760'),
+('1736776452487', '2025-01-13 21:54:12', '1736224186282', '1736224631826'),
+('1736839895394', '2025-01-14 15:31:35', '1736224141560', '1736224622760'),
+('1736839895870', '2025-01-14 15:31:35', '1736224141560', '1736224614889'),
+('1736938993981', '2025-01-15 19:03:13', '1736938993973', '1736223340693'),
+('1736944939864', '2025-01-15 20:42:19', '1736224118569', '1736224622760'),
+('1737101322728', '2025-01-17 16:08:42', '1736224118569', '1736224614889');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `notices`
+--
+
+DROP TABLE IF EXISTS `notices`;
+CREATE TABLE IF NOT EXISTS `notices` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `title` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '通知标题',
+  `detail` varchar(125) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '通知详情',
+  `create_time` char(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '发布时间',
+  `team_id` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '社团id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='通知记录' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `notices`
+--
+
+INSERT INTO `notices` (`id`, `title`, `detail`, `create_time`, `team_id`) VALUES
+('1736243606257', '交会费', '123', '2025-01-07', NULL),
+('1736306324562', '测试', '1111', '2025-01-08', NULL),
+('1736306453365', '222', '222', '2025-01-08', '1736224118569'),
+('1736314259896', '今天天气很好', '123', '2025-01-08', '1736224141560'),
+('1736944646874', '今天学习了吗', '今天学习了吗', '2025-01-15', '1736224118569');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `pay_logs`
+--
+
+DROP TABLE IF EXISTS `pay_logs`;
+CREATE TABLE IF NOT EXISTS `pay_logs` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '缴费时间',
+  `total` double NOT NULL COMMENT '缴纳费用',
+  `team_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '收费社团',
+  `user_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '缴费用户',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `team_id` (`team_id`) USING BTREE,
+  KEY `user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='缴费记录' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `pay_logs`
+--
+
+INSERT INTO `pay_logs` (`id`, `create_time`, `total`, `team_id`, `user_id`) VALUES
+('1736225515624', '2025-01-07 12:51:55', 100, '1736224118569', '1736224614889'),
+('1736225528599', '2025-01-07 12:52:08', 100, '1736224159128', '1736224614889'),
+('1736225548520', '2025-01-07 12:52:28', 20, '1736224186282', '1736224648353');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `teams`
+--
+
+DROP TABLE IF EXISTS `teams`;
+CREATE TABLE IF NOT EXISTS `teams` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '社团名称',
+  `create_time` char(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '建立时间',
+  `total` int NOT NULL COMMENT '社团人数',
+  `manager` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '社团团长',
+  `type_id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '社团编号',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `type_id` (`type_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='社团信息' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `teams`
+--
+
+INSERT INTO `teams` (`id`, `name`, `create_time`, `total`, `manager`, `type_id`) VALUES
+('1736224118569', '学习社', '2025-01-07', 4, '1736223266843', '1736222700284'),
+('1736224141560', '计算机科学俱乐部', '2025-01-07', 3, '1736223340693', '1736222700284'),
+('1736224159128', '物理兴趣小组', '2025-01-07', 5, '1736223266843', '1736222700284'),
+('1736224186282', '文学社', '2025-01-07', 3, '1736223266843', '1736222716017'),
+('1736224245782', '艺术与设计社', '2025-01-07', 3, '1736223879293', '1736222716017'),
+('1736224277197', '校足球队', '2025-01-07', 1, '1736223887084', '1736222726569'),
+('1736224287846', '校篮球队', '2025-01-07', 1, '1736223887084', '1736222726569'),
+('1736224300565', '游泳俱乐部', '2025-01-07', 1, '1736223887084', '1736222726569'),
+('1736224319619', '羽毛球社', '2025-01-07', 1, '1736223896278', '1736222726569'),
+('1736224339618', '志愿者协会', '2025-01-07', 1, '1736223896278', '1736222733195'),
+('1736224356490', '环保行动组织', '2025-01-07', 1, '1736223904813', '1736222733195'),
+('1736224371579', '爱心帮扶社', '2025-01-07', 1, '1736223904813', '1736222733195'),
+('1736224387650', '编程兴趣小组', '2025-01-07', 1, '1736223930860', '1736222739345'),
+('1736224407553', '黑客社团', '2025-01-07', 1, '1736223930860', '1736222739345'),
+('1736224418852', '红客社团', '2025-01-07', 1, '1736223973115', '1736222739345'),
+('1736224435346', '机器人创新实验室', '2025-01-07', 1, '1736223973115', '1736222739345'),
+('1736224455487', '动漫社', '2025-01-07', 1, '1736223981649', '1736222746243'),
+('1736224470824', '电竞社', '2025-01-07', 1, '1736223998408', '1736222746243'),
+('1736226267177', '街舞社', '2025-01-07', 1, '1736224009602', '1736222746243'),
+('1736938993973', '智能制造社', '2025-01-15', 1, '1736223340693', '1736222739345');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `team_types`
+--
+
+DROP TABLE IF EXISTS `team_types`;
+CREATE TABLE IF NOT EXISTS `team_types` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型名称',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='社团类型' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `team_types`
+--
+
+INSERT INTO `team_types` (`id`, `name`, `create_time`) VALUES
+('1736222700284', '学术类', '2025-01-07 12:05:00'),
+('1736222716017', '文化类', '2025-01-07 12:05:16'),
+('1736222726569', '体育类', '2025-01-07 12:05:26'),
+('1736222733195', '公益类', '2025-01-07 12:05:33'),
+('1736222739345', '技术类', '2025-01-07 12:05:39'),
+('1736222746243', '娱乐类', '2025-01-07 12:05:46');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` char(13) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '记录ID',
+  `user_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户账号',
+  `pass_word` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户密码',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户姓名',
+  `gender` char(2) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户性别',
+  `age` int DEFAULT NULL COMMENT '用户年龄',
+  `phone` char(11) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '联系电话',
+  `address` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '联系地址',
+  `status` int NOT NULL COMMENT '信息状态',
+  `create_time` char(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '添加时间',
+  `type` int NOT NULL COMMENT '用户身份',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='系统用户' ROW_FORMAT=DYNAMIC;
+
+--
+-- 转存表中的数据 `users`
+--
+
+INSERT INTO `users` (`id`, `user_name`, `pass_word`, `name`, `gender`, `age`, `phone`, `address`, `status`, `create_time`, `type`) VALUES
+('1642422100000', 'admin', '123', '系统管理员', '男', 23, '15708293647', '湖北省武汉市江大路8号', 1, '2025-01-06 20:00:00', 0),
+('1736223266843', 'hc01', '123', '张一', '男', 19, '15012435679', '湖北省武汉市江大路8号', 1, '2025-01-07 12:14:26', 1),
+('1736223340693', 'hc02', '123', '张二', '女', 20, '10000000002', '湖北省武汉市江大路8号', 1, '2025-01-07 12:15:40', 1),
+('1736223879293', 'hc03', '123', '张三', '男', 20, '10000000003', '湖北省武汉市江大路8号', 1, '2025-01-07 12:24:39', 1),
+('1736223887084', 'hc04', '123', '张四', '男', 20, '10000000004', '湖北省武汉市江大路8号', 1, '2025-01-07 12:24:47', 1),
+('1736223896278', 'hc05', '123', '张五', '男', 20, '10000000005', '湖北省武汉市江大路8号', 1, '2025-01-07 12:24:56', 1),
+('1736223904813', 'hc06', '123', '张六', '女', 20, '10000000006', '湖北省武汉市江大路8号', 1, '2025-01-07 12:25:04', 1),
+('1736223930860', 'hc07', '123', '张七', '男', 20, '10000000007', '湖北省武汉市江大路8号', 1, '2025-01-07 12:25:30', 1),
+('1736223973115', 'hc08', '123', '张八', '男', 20, '10000000008', '湖北省武汉市江大路8号', 1, '2025-01-07 12:26:13', 1),
+('1736223981649', 'hc09', '123', '张九', '男', 20, '10000000009', '湖北省武汉市江大路8号', 1, '2025-01-07 12:26:21', 1),
+('1736223998408', 'hc10', '123', '张十', '男', 24, '10000000010', '湖北省武汉市江大路8号', 1, '2025-01-07 12:26:38', 1),
+('1736224009602', 'hc11', '123', '张十一', '男', 21, '10000000011', '湖北省武汉市江大路8号', 1, '2025-01-07 12:26:49', 1),
+('1736224614889', 'user01', '123', '刘一', '男', 19, '15926478943', '湖北省武汉市江大路8号', 1, '2025-01-07 12:36:54', 2),
+('1736224622760', 'user02', '123', '刘二', '男', 19, '11000000002', '湖北省武汉市江大路8号', 1, '2025-01-07 12:37:02', 2),
+('1736224631826', 'user03', '123', '刘三', '男', 19, '15012225679', '湖北省武汉市江大路8号', 1, '2025-01-07 12:37:11', 2),
+('1736224639401', 'user04', '123', '刘四', '男', 19, '11000000004', '湖北省武汉市江大路8号', 1, '2025-01-07 12:37:19', 2),
+('1736224648353', 'user05', '123', '刘五', '女', 19, '11000000005', '湖北省武汉市江大路8号', 1, '2025-01-07 12:37:28', 2),
+('1736224659855', 'user06', '123', '刘六', '女', 23, '11000000006', '湖北省武汉市江大路8号', 1, '2025-01-07 12:37:39', 2);
+
+--
+-- 限制导出的表
+--
+
+--
+-- 限制表 `active_logs`
+--
+ALTER TABLE `active_logs`
+  ADD CONSTRAINT `active_logs_ibfk_1` FOREIGN KEY (`active_id`) REFERENCES `activities` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `active_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- 限制表 `activities`
+--
+ALTER TABLE `activities`
+  ADD CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- 限制表 `activity_comments`
+--
+ALTER TABLE `activity_comments`
+  ADD CONSTRAINT `fk_activity_comment_activity` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_activity_comment_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
+-- 限制表 `apply_logs`
+--
+ALTER TABLE `apply_logs`
+  ADD CONSTRAINT `apply_logs_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `apply_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- 限制表 `members`
+--
+ALTER TABLE `members`
+  ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `members_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- 限制表 `pay_logs`
+--
+ALTER TABLE `pay_logs`
+  ADD CONSTRAINT `pay_logs_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `pay_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- 限制表 `teams`
+--
+ALTER TABLE `teams`
+  ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `team_types` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
